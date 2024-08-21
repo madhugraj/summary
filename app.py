@@ -98,6 +98,8 @@ with st.expander("Download Excel file (Password Protected)"):
 
     if st.button("Download Excel"):
         if password_input in passwords:
+            # Use BytesIO to handle file download more smoothly
+            import io
             with open(excel_file_path, "rb") as file:
                 st.download_button(label="Click to Download", data=file, file_name="generated_summaries.xlsx")
         else:
