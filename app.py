@@ -6,21 +6,24 @@ import os
 # Configure the API key
 genai.configure(api_key="AIzaSyAe8rheF4wv2ZHJB2YboUhyyVlM2y0vmlk")
 
-# Instantiate the model
-model = genai.GenerativeModel(model_name="models/gemini-1.5-flash-001")
-
 # Define the Excel file path
-excel_file_path = r"generated_summaries.xlsx"
+excel_file_path = "generated_summaries.xlsx"
 
 # Initialize the Excel file if it doesn't exist
 if not os.path.exists(excel_file_path):
+    st.write("Creating new Excel file...")
     df = pd.DataFrame(columns=["Prompt", "Notes", "Generated Summary"])
     df.to_excel(excel_file_path, index=False, engine='openpyxl')
+    st.write("Excel file created.")
 
 def save_to_excel(prompt, notes, summary):
     # Load the existing data, specifying the engine explicitly
-    df = pd.read_excel(excel_file_path, engine='openpyxl')
-    
+    try:
+        df = pd.read_excel(excel_file_path, engine='openpyxl')
+    except Exception as e:
+        st.error(f"Error reading Excel file: {e}")
+        return
+
     # Create a DataFrame for the new row
     new_row = pd.DataFrame({"Prompt": [prompt], "Notes": [notes], "Generated Summary": [summary]})
     
@@ -28,14 +31,18 @@ def save_to_excel(prompt, notes, summary):
     df = pd.concat([df, new_row], ignore_index=True)
     
     # Save back to the Excel file, specifying the engine explicitly
-    df.to_excel(excel_file_path, index=False, engine='openpyxl')
+    try:
+        df.to_excel(excel_file_path, index=False, engine='openpyxl')
+        st.write("Data saved to Excel file.")
+    except Exception as e:
+        st.error(f"Error saving to Excel file: {e}")
 
 def generate_summary(notes_text, prompt_text):
     full_prompt = f"{prompt_text}\n\nNotes:\n{notes_text}"
     
     try:
         # Generate the content
-        response = model.generate_content(
+        response = genai.GenerativeModel(model_name="models/gemini-1.5-flash-001").generate_content(
             full_prompt,
             generation_config=genai.GenerationConfig(
                 max_output_tokens=1000,
@@ -50,11 +57,13 @@ def generate_summary(notes_text, prompt_text):
     except Exception as e:
         return f"An error occurred: {str(e)}"
 
+# Streamlit UI
 st.title("Medical Summary Generator")
 st.write("Generate summaries for medical records or consultations.")
 
 notes = st.text_area("Enter the notes here:")
 custom_prompt = st.text_area("Enter your custom prompt here:")
+
 if st.button("Generate for Medical Record"):
     if notes:
         prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan for medical record purposes."
