@@ -6,15 +6,15 @@ import os
 # Configure the API key
 genai.configure(api_key="AIzaSyAe8rheF4wv2ZHJB2YboUhyyVlM2y0vmlk")
 
-# Define the Excel file path
-excel_file_path = "generated_summaries.xlsx"
+# Define the Excel file path relative to the main directory
+excel_file_path = os.path.join(os.getcwd(), "generated_summaries.xlsx")
 
 # Initialize the Excel file if it doesn't exist
 if not os.path.exists(excel_file_path):
     st.write("Creating new Excel file...")
     df = pd.DataFrame(columns=["Prompt", "Notes", "Generated Summary"])
     df.to_excel(excel_file_path, index=False, engine='openpyxl')
-    st.write("Excel file created.")
+    st.write(f"Excel file created at: {excel_file_path}")
 
 def save_to_excel(prompt, notes, summary):
     # Load the existing data, specifying the engine explicitly
@@ -33,7 +33,7 @@ def save_to_excel(prompt, notes, summary):
     # Save back to the Excel file, specifying the engine explicitly
     try:
         df.to_excel(excel_file_path, index=False, engine='openpyxl')
-        st.write("Data saved to Excel file.")
+        st.write(f"Data saved to Excel file at: {excel_file_path}")
     except Exception as e:
         st.error(f"Error saving to Excel file: {e}")
 
