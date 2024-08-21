@@ -65,39 +65,37 @@ def generate_summary(notes_text, prompt_text):
 st.title("Medical Summary Generator")
 st.write("Generate summaries for medical records or consultations.")
 
-# Password authentication
-password = st.text_input("Enter the password to access the download option:", type="password")
-if password in passwords:
-    st.success("Access granted.")
-    notes = st.text_area("Enter the notes here:")
-    custom_prompt = st.text_area("Enter your custom prompt here:")
+notes = st.text_area("Enter the notes here:")
+custom_prompt = st.text_area("Enter your custom prompt here:")
 
-    if st.button("Generate for Medical Record"):
-        if notes:
-            prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan for medical record purposes."
-            summary = generate_summary(notes, prompt)
-            st.write(summary)
-        else:
-            st.warning("Please enter the notes.")
+if st.button("Generate for Medical Record"):
+    if notes:
+        prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan for medical record purposes."
+        summary = generate_summary(notes, prompt)
+        st.write(summary)
+    else:
+        st.warning("Please enter the notes.")
 
-    if st.button("Generate for Consultation"):
-        if notes:
-            prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan for consultation purposes."
-            summary = generate_summary(notes, prompt)
-            st.write(summary)
-        else:
-            st.warning("Please enter the notes.")
+if st.button("Generate for Consultation"):
+    if notes:
+        prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan for consultation purposes."
+        summary = generate_summary(notes, prompt)
+        st.write(summary)
+    else:
+        st.warning("Please enter the notes.")
 
-    if st.button("Generate Custom Summary"):
-        if notes and custom_prompt:
-            summary = generate_summary(notes, custom_prompt)
-            st.write(summary)
-        else:
-            st.warning("Please enter both the notes and your custom prompt.")
-    
-    # Add download button for Excel file
-    with open(excel_file_path, "rb") as file:
-        st.download_button(label="Download Excel file", data=file, file_name="generated_summaries.xlsx")
+if st.button("Generate Custom Summary"):
+    if notes and custom_prompt:
+        summary = generate_summary(notes, custom_prompt)
+        st.write(summary)
+    else:
+        st.warning("Please enter both the notes and your custom prompt.")
 
-else:
-    st.error("Access denied. Incorrect password.")
+# Add download button for Excel file with password prompt
+if st.button("Download Excel file"):
+    password = st.text_input("Enter the password to download the file:", type="password")
+    if password in passwords:
+        with open(excel_file_path, "rb") as file:
+            st.download_button(label="Click to Download", data=file, file_name="generated_summaries.xlsx")
+    else:
+        st.error("Access denied. Incorrect password.")
