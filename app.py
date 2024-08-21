@@ -83,95 +83,96 @@ if st.button("Summary for Medical Record"):
 
 if st.button("Generate Chart Notes"):
     if notes:
-        prompt = "You are a medical scribe.Create medical chart notes by following US healthcare styles using the following health care transcript.
+        prompt = """"You are a medical scribe. Create medical chart notes by following US healthcare styles using the following health care transcript.
 Example: {Untagged Data
 Chief Complaint
 HAP
-#Reason for Visit (Summary/Chief Complaint):  
-  #45 y.o. female presents for an annual physical exam and follow up of hypertension and gastric reflux.  
-  
+#Reason for Visit (Summary/Chief Complaint):  
+ #45 y.o. female presents for an annual physical exam and follow up of hypertension and gastric reflux.  
+  
 #See care plans and review of systems below for further history details. See
 #associated Encounter Report for vitals, allergies, medications, and orders
 #that were reviewed and associated with this visit. Relevant past medical and
 #surgical history, social history, family history were reviewed and updated as
-#a part of today's visit. Recent relevant labs and past chart notes were
-#reviewed.  
-  #History, Assessment, and Plans By Problem:  
-#Unaccompanied today.  
-  #Preventative Care Summary  
-  #Status Date Due Completion Date  
-#Tetanus Overdue 01/17/1979 \---  
-  #Health maintenance reviewed and updated.  
-Labs & screening:  
-#  * Reviewed and discussed the previous lab report.   
-#  * Ordered labs.  
- 
-#Social screening:  
-#She was a smoker in the past   
-  
- # * Ordered MAMMO 3D TOMOSYNTHESIS SCREENING BILAT W/CAD.  
+#a part of today\'s visit. Recent relevant labs and past chart notes were
+#reviewed.  
+ #History, Assessment, and Plans By Problem:  
+#Unaccompanied today.  
+ #Preventative Care Summary  
+ #Status Date Due Completion Date  
+#Tetanus Overdue 01/17/1979 \\---  
+ #Health maintenance reviewed and updated.  
+Labs & screening:  
+# * Reviewed and discussed the previous lab report.  
+# * Ordered labs.  
+ 
+#Social screening:  
+#She was a smoker in the past  
+  
+ # * Ordered MAMMO 3D TOMOSYNTHESIS SCREENING BILAT W/CAD.  
 
-  # Primary hypertension  
-#She has hypertension and ..  
+ # Primary hypertension  
+#She has hypertension and ..  
 
-  #* Informed that the high blood pressure …
-  
-#\-     lisinopril (PRINIVIL) 10 MG tablet; Take 1 tablet (10 mg total) by mouth daily.  
+ #* Informed that the high blood pressure …
+  
+#\\-   lisinopril (PRINIVIL) 10 MG tablet; Take 1 tablet (10 mg total) by mouth daily.  
 
-#History of sleeve gastrectomy  
+#History of sleeve gastrectomy  
 #Patient had her gastric sleeve ….
- # * Informed that her weight gain is due to her eating habits.   
+ # * Informed that her weight gain is due to her eating habits.  
 
- # \-     ZINC; Future  
+ # \\-   ZINC; Future  
 
-  
-#Gastroesophageal reflux disease without esophagitis .. 
-   # * Prescribed pantoprazole (PROTONIX) 40 mg tablet; Take 1 tablet (40 mg total) by mouth daily.  
- 
-#\-     HEMOGLOBIN A1C W/EAG; Future; Expected date: 08/20/2024  
-     
-#Review of System:  
-#[Resp] : No snoring.  
-#[GI] : (+) Vomiting.  
-#[Neuro] : (+) Headache.  
-  
-#ROS was obtained as per above and HPI and all other systems reviewed otherwise negative.  
-  
-#Physical Examination:  
-#Vitals:  
-#08/20/24 1000 08/20/24 1001 08/20/24 1002 08/20/24 1003  
-#BP: (!) 154/99 (!) 157/102 (!) 149/99 (!) 153/100  
-#Pulse:  
-#Resp:  
+  
+#Gastroesophageal reflux disease without esophagitis .. 
+  # * Prescribed pantoprazole (PROTONIX) 40 mg tablet; Take 1 tablet (40 mg total) by mouth daily.  
+ 
+#\\-   HEMOGLOBIN A1C W/EAG; Future; Expected date: 08/20/2024  
+   
+#Review of System:  
+#[Resp] : No snoring.  
+#[GI] : (+) Vomiting.  
+#[Neuro] : (+) Headache.  
+  
+#ROS was obtained as per above and HPI and all other systems reviewed otherwise negative.  
+  
+#Physical Examination:  
+#Vitals:  
+#08/20/24 1000 08/20/24 1001 08/20/24 1002 08/20/24 1003  
+#BP: (!) 154/99 (!) 157/102 (!) 149/99 (!) 153/100  
+#Pulse:  
+#Resp:  
 
-#Body mass index is 42.53 kg/m².  
-  
+#Body mass index is 42.53 kg/m².  
+  
 #Constitutional: (+) Morbid obesity, well dressed, no acute distress. Vitals
-#reviewed and stable.  
+#reviewed and stable.  
 #HEENT: Atraumatic and normo-cephalic. No discharge, no eyelid swelling, sclera
-#normal. Normal appearing outer ear, nose and lips. TMs normal. (+) Has some posterior pharynx erythema.  
-#Neck: Normal appearing neck, no thyroid nodules or lymphadenopathy.  
- 
-#Current Outpatient Medications  
-#Medication Sig  
-#• cyanocobalamin 1000 MCG tablet Take 1 tablet (1,000 mcg total) by mouth daily.  
-#No current facility-administered medications for this visit.  
-  
-#No follow-ups on file.  
-  
-#Patient expressed understanding of the care plan.  
-#All questions and concerns addressed.  
-#A copy of the patient's after visit summary was provided at discharge for review.  
-  
-#“I personally evaluated the patient and reviewed the history,  as documented by scribe Aseem Hafiz...”  
- 
+#normal. Normal appearing outer ear, nose and lips. TMs normal. (+) Has some posterior pharynx erythema.  
+#Neck: Normal appearing neck, no thyroid nodules or lymphadenopathy.  
+ 
+#Current Outpatient Medications  
+#Medication Sig  
+#• cyanocobalamin 1000 MCG tablet Take 1 tablet (1,000 mcg total) by mouth daily.  
+#No current facility-administered medications for this visit.  
+  
+#No follow-ups on file.  
+  
+#Patient expressed understanding of the care plan.  
+#All questions and concerns addressed.  
+#A copy of the patient\'s after visit summary was provided at discharge for review.  
+  
+#“I personally evaluated the patient and reviewed the history, as documented by scribe Aseem Hafiz...”  
+ 
 #ROS
 #PE
 #Past medical history
 #Past surgical history
 #Past social history
-#Disclaimer  }
-Make sure to follow US health care chartnote writing patterns"
+#Disclaimer }
+Make sure to follow US health care chart note writing patterns\""""
+
         summary = generate_summary(notes, prompt)
         st.write(summary)
     else:
