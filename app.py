@@ -2,7 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 import pandas as pd
 import io
-import os  # Import os module
+import os
 
 # Retrieve the API key and password from secrets
 api_key = st.secrets["api_key"]
@@ -39,10 +39,10 @@ def save_to_excel(prompt, notes, summary):
     # Concatenate the new row with the existing data
     df = pd.concat([df, new_row], ignore_index=True)
     
-    # Save back to the Excel file, specifying the engine explicitly
+    # Save back to the Excel file
     try:
         with pd.ExcelWriter(excel_file_path, index=False, engine='openpyxl') as writer:
-            df.to_excel(writer)
+            df.to_excel(writer, index=False)
         st.write("Data saved to Excel file.")
     except Exception as e:
         st.error(f"Error saving to Excel file: {e}")
@@ -197,7 +197,7 @@ with st.expander("Download Excel file (Password Protected)"):
             buffer = io.BytesIO()
             with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
                 df = pd.read_excel(excel_file_path, engine='openpyxl')
-                df.to_excel(writer, index=False)
+                df.to_excel(writer, index=False)  # Set index=False here
             buffer.seek(0)
             st.download_button(
                 label="Click to Download",
