@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 # Configure the API key
-genai.configure(api_key="YOUR_API_KEY")
+genai.configure(api_key="AIzaSyAe8rheF4wv2ZHJB2YboUhyyVlM2y0vmlk")
 
 # Define the Excel file path relative to the Streamlit environment
 excel_file_path = "generated_summaries.xlsx"
