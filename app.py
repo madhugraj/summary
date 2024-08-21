@@ -1,7 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
 import pandas as pd
-import os
+import io
 
 # Retrieve the API key and password from secrets
 api_key = st.secrets["api_key"]
@@ -14,10 +14,14 @@ genai.configure(api_key=api_key)
 excel_file_path = "generated_summaries.xlsx"
 
 # Initialize the Excel file if it doesn't exist
+def initialize_excel_file():
+    df = pd.DataFrame(columns=["Prompt", "Notes", "Generated Summary"])
+    with pd.ExcelWriter(excel_file_path, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False)
+
 if not os.path.exists(excel_file_path):
     st.write("Creating new Excel file...")
-    df = pd.DataFrame(columns=["Prompt", "Notes", "Generated Summary"])
-    df.to_excel(excel_file_path, index=False, engine='openpyxl')
+    initialize_excel_file()
     st.write("Excel file created.")
 
 def save_to_excel(prompt, notes, summary):
@@ -36,7 +40,8 @@ def save_to_excel(prompt, notes, summary):
     
     # Save back to the Excel file, specifying the engine explicitly
     try:
-        df.to_excel(excel_file_path, index=False, engine='openpyxl')
+        with pd.ExcelWriter(excel_file_path, index=False, engine='openpyxl') as writer:
+            df.to_excel(writer)
         st.write("Data saved to Excel file.")
     except Exception as e:
         st.error(f"Error saving to Excel file: {e}")
@@ -62,23 +67,111 @@ def generate_summary(notes_text, prompt_text):
         return f"An error occurred: {str(e)}"
 
 # Streamlit UI
-st.title("Medical Summary Generator")
-st.write("Generate summaries for medical records or consultations.")
+st.title("Chart Notes & Summary Generator")
+st.write("Generate summaries for medical records and chart notes from medical transcripts")
 
-notes = st.text_area("Enter the notes here:")
+notes = st.text_area("Enter the notes/transcripts here:")
 custom_prompt = st.text_area("Enter your custom prompt here:")
 
-if st.button("Generate for Medical Record"):
+if st.button("Summary for Medical Record"):
     if notes:
-        prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan for medical record purposes."
+        prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan"
         summary = generate_summary(notes, prompt)
         st.write(summary)
     else:
         st.warning("Please enter the notes.")
 
-if st.button("Generate for Consultation"):
+if st.button("Generate Chart Notes"):
     if notes:
-        prompt = "Summarize the patient's medical history, including symptoms, imaging findings, and the proposed treatment plan for consultation purposes."
+        prompt = "You are a medical scribe.Create medical chart notes by following US healthcare styles using the following health care transcript.
+Example: {Untagged Data
+Chief Complaint
+HAP
+#Reason for Visit (Summary/Chief Complaint):  
+  #45 y.o. female presents for an annual physical exam and follow up of hypertension and gastric reflux.  
+  
+#See care plans and review of systems below for further history details. See
+#associated Encounter Report for vitals, allergies, medications, and orders
+#that were reviewed and associated with this visit. Relevant past medical and
+#surgical history, social history, family history were reviewed and updated as
+#a part of today's visit. Recent relevant labs and past chart notes were
+#reviewed.  
+  #History, Assessment, and Plans By Problem:  
+#Unaccompanied today.  
+  #Preventative Care Summary  
+  #Status Date Due Completion Date  
+#Tetanus Overdue 01/17/1979 \---  
+  #Health maintenance reviewed and updated.  
+Labs & screening:  
+#  * Reviewed and discussed the previous lab report.   
+#  * Ordered labs.  
+ 
+#Social screening:  
+#She was a smoker in the past   
+  
+ # * Ordered MAMMO 3D TOMOSYNTHESIS SCREENING BILAT W/CAD.  
+
+  # Primary hypertension  
+#She has hypertension and ..  
+
+  #* Informed that the high blood pressure …
+  
+#\-     lisinopril (PRINIVIL) 10 MG tablet; Take 1 tablet (10 mg total) by mouth daily.  
+
+#History of sleeve gastrectomy  
+#Patient had her gastric sleeve ….
+ # * Informed that her weight gain is due to her eating habits.   
+
+ # \-     ZINC; Future  
+
+  
+#Gastroesophageal reflux disease without esophagitis .. 
+   # * Prescribed pantoprazole (PROTONIX) 40 mg tablet; Take 1 tablet (40 mg total) by mouth daily.  
+ 
+#\-     HEMOGLOBIN A1C W/EAG; Future; Expected date: 08/20/2024  
+     
+#Review of System:  
+#[Resp] : No snoring.  
+#[GI] : (+) Vomiting.  
+#[Neuro] : (+) Headache.  
+  
+#ROS was obtained as per above and HPI and all other systems reviewed otherwise negative.  
+  
+#Physical Examination:  
+#Vitals:  
+#08/20/24 1000 08/20/24 1001 08/20/24 1002 08/20/24 1003  
+#BP: (!) 154/99 (!) 157/102 (!) 149/99 (!) 153/100  
+#Pulse:  
+#Resp:  
+
+#Body mass index is 42.53 kg/m².  
+  
+#Constitutional: (+) Morbid obesity, well dressed, no acute distress. Vitals
+#reviewed and stable.  
+#HEENT: Atraumatic and normo-cephalic. No discharge, no eyelid swelling, sclera
+#normal. Normal appearing outer ear, nose and lips. TMs normal. (+) Has some posterior pharynx erythema.  
+#Neck: Normal appearing neck, no thyroid nodules or lymphadenopathy.  
+ 
+#Current Outpatient Medications  
+#Medication Sig  
+#• cyanocobalamin 1000 MCG tablet Take 1 tablet (1,000 mcg total) by mouth daily.  
+#No current facility-administered medications for this visit.  
+  
+#No follow-ups on file.  
+  
+#Patient expressed understanding of the care plan.  
+#All questions and concerns addressed.  
+#A copy of the patient's after visit summary was provided at discharge for review.  
+  
+#“I personally evaluated the patient and reviewed the history,  as documented by scribe Aseem Hafiz...”  
+ 
+#ROS
+#PE
+#Past medical history
+#Past surgical history
+#Past social history
+#Disclaimer  }
+Make sure to follow US health care chartnote writing patterns"
         summary = generate_summary(notes, prompt)
         st.write(summary)
     else:
@@ -99,8 +192,16 @@ with st.expander("Download Excel file (Password Protected)"):
     if st.button("Download Excel"):
         if password_input in passwords:
             # Use BytesIO to handle file download more smoothly
-            import io
-            with open(excel_file_path, "rb") as file:
-                st.download_button(label="Click to Download", data=file, file_name="generated_summaries.xlsx")
+            buffer = io.BytesIO()
+            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                df = pd.read_excel(excel_file_path, engine='openpyxl')
+                df.to_excel(writer, index=False)
+            buffer.seek(0)
+            st.download_button(
+                label="Click to Download",
+                data=buffer,
+                file_name="generated_summaries.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
         else:
             st.error("Access denied. Incorrect password.")
