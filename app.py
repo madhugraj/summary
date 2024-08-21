@@ -92,10 +92,13 @@ if st.button("Generate Custom Summary"):
         st.warning("Please enter both the notes and your custom prompt.")
 
 # Add download button for Excel file with password prompt
-if st.button("Download Excel file"):
-    password = st.text_input("Enter the password to download the file:", type="password")
-    if password in passwords:
-        with open(excel_file_path, "rb") as file:
-            st.download_button(label="Click to Download", data=file, file_name="generated_summaries.xlsx")
-    else:
-        st.error("Access denied. Incorrect password.")
+st.write("---")
+with st.expander("Download Excel file (Password Protected)"):
+    password_input = st.text_input("Enter the password to download the file:", type="password")
+
+    if st.button("Download Excel"):
+        if password_input in passwords:
+            with open(excel_file_path, "rb") as file:
+                st.download_button(label="Click to Download", data=file, file_name="generated_summaries.xlsx")
+        else:
+            st.error("Access denied. Incorrect password.")
