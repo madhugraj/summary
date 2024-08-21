@@ -26,8 +26,8 @@ if not os.path.exists(excel_file_path):
     st.write("Excel file created.")
 
 def save_to_excel(prompt, notes, summary):
-    # Load the existing data, specifying the engine explicitly
     try:
+        # Load existing data
         df = pd.read_excel(excel_file_path, engine='openpyxl')
     except Exception as e:
         st.error(f"Error reading Excel file: {e}")
@@ -36,16 +36,16 @@ def save_to_excel(prompt, notes, summary):
     # Create a DataFrame for the new row
     new_row = pd.DataFrame({"Prompt": [prompt], "Notes": [notes], "Generated Summary": [summary]})
     
-    # Concatenate the new row with the existing data
+    # Append new data
     df = pd.concat([df, new_row], ignore_index=True)
     
-    # Save back to the Excel file
     try:
-        with pd.ExcelWriter(excel_file_path, index=False, engine='openpyxl') as writer:
-            df.to_excel(writer, index=False)
+        # Save updated DataFrame to Excel file
+        df.to_excel(excel_file_path, index=False, engine='openpyxl')
         st.write("Data saved to Excel file.")
     except Exception as e:
         st.error(f"Error saving to Excel file: {e}")
+
 
 def generate_summary(notes_text, prompt_text):
     full_prompt = f"{prompt_text}\n\nNotes:\n{notes_text}"
