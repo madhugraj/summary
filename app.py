@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 import pandas as pd
 import io
+import os  # Import os module
 
 # Retrieve the API key and password from secrets
 api_key = st.secrets["api_key"]
@@ -83,7 +84,7 @@ if st.button("Summary for Medical Record"):
 
 if st.button("Generate Chart Notes"):
     if notes:
-        prompt = """"You are a medical scribe. Create medical chart notes by following US healthcare styles using the following health care transcript.
+        prompt = """You are a medical scribe. Create medical chart notes by following US healthcare styles using the following health care transcript.
 Example: {Untagged Data
 Chief Complaint
 HAP
@@ -116,19 +117,19 @@ Labs & screening:  
 
  #* Informed that the high blood pressure …
   
-#\\-   lisinopril (PRINIVIL) 10 MG tablet; Take 1 tablet (10 mg total) by mouth daily.  
+#\\-   lisinopril (PRINIVIL) 10 MG tablet; Take 1 tablet (10 mg total) by mouth daily.  
 
 #History of sleeve gastrectomy  
 #Patient had her gastric sleeve ….
  # * Informed that her weight gain is due to her eating habits.  
 
- # \\-   ZINC; Future  
+ # \\-   ZINC; Future  
 
   
 #Gastroesophageal reflux disease without esophagitis .. 
   # * Prescribed pantoprazole (PROTONIX) 40 mg tablet; Take 1 tablet (40 mg total) by mouth daily.  
  
-#\\-   HEMOGLOBIN A1C W/EAG; Future; Expected date: 08/20/2024  
+#\\-   HEMOGLOBIN A1C W/EAG; Future; Expected date: 08/20/2024  
    
 #Review of System:  
 #[Resp] : No snoring.  
@@ -171,7 +172,7 @@ Labs & screening:  
 #Past surgical history
 #Past social history
 #Disclaimer }
-Make sure to follow US health care chart note writing patterns\""""
+Make sure to follow US health care chart note writing patterns"""
 
         summary = generate_summary(notes, prompt)
         st.write(summary)
